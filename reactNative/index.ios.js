@@ -12,6 +12,7 @@ import {
   ScrollView,
   WebView
 } from 'react-native';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 class Hero extends Component {
   render() {
@@ -32,15 +33,86 @@ const team = [
   { name: 'Vaggelis', image: require('./public/images/vaggelis.jpg') }
 ];
 
+class SongListEntry extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      gestureName: 'none',
+      backgroundColor: '#fff',
+      onPlaylist: false,
+      opacity: 1
+    }
+  }
+
+  onSwipe(gestureName, gestureState) {
+    const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
+    this.setState({ gestureName: gestureName });
+    switch (gestureName) {
+      case SWIPE_UP:
+        this.setState({ backgroundColor: 'red' });
+        break;
+      case SWIPE_DOWN:
+        this.setState({ backgroundColor: 'green' });
+        break;
+      case SWIPE_LEFT:
+        this.props._removeSong(this.props.song, 'Song removed')  
+        this.setState({ backgroundColor: '#282828', onPlaylist: false, opacity: 1 }, () => console.log('Swipe left: ', this.state));  
+        break;
+      case SWIPE_RIGHT:
+        this.props._addSong(this.props.song, 'Song added')  
+        this.setState({ backgroundColor: 'red', onPlaylist: true, opacity: 0.3 }, () => console.log('Swipe right: ', this.state));  
+        break;
+    }
+  }
+
+  render() {
+
+    const config = {
+      velocityThreshold: 0.1,
+      directionalOffsetThreshold: 10
+    };
+
+    return (
+      <GestureRecognizer
+        onSwipe={(direction, state) => this.onSwipe(direction, state)}
+        config={config}
+        style={{borderColor: this.state.borderColor}}
+      >
+        <WebView
+          key={this.props.index}
+          source={{ uri: `https://open.spotify.com/embed?uri=${this.props.song.uri}` }}
+          style={[styles.webview, {opacity: this.state.opacity}]}
+          allowsInlineMediaPlayback={true}
+          automaticallyAdjustContentInsets={true}
+          scrollEnabled={true}
+          automaticallyAdjustContentInsets={false}
+          height={100}
+        />
+      </GestureRecognizer>
+    );
+  }
+}
+
 export default class reactNative extends Component {
   constructor(props) {
     super(props);
     this.state = {
       text: '',
       songs: [],
+      message: ''
     };
     this._onPressButton = this._onPressButton.bind(this);
     this._onSearch = this._onSearch.bind(this);
+    this._addSong = this._addSong.bind(this);
+    this._removeSong = this._removeSong.bind(this);
+  }
+
+  _addSong(song, message) {
+    this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` });
+  }
+
+  _removeSong(song, message) {
+    this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` });
   }
 
   _onPressButton(name) {
@@ -99,17 +171,20 @@ export default class reactNative extends Component {
           />
         </View>
 
+
+        {this.state.message !== '' &&
+          <View>
+            <Text style={styles.message}>{this.state.message}</Text>
+          </View>
+        }  
+
         <ScrollView style={{borderWidth:1, borderColor : 'gray', flex:1}}>
           {this.state.songs.map((song, index) => (
-            <WebView
+            <SongListEntry
               key={index}
-              source={{ uri: `https://open.spotify.com/embed?uri=${song.uri}` }}
-              style={styles.webview}
-              allowsInlineMediaPlayback={true}
-              automaticallyAdjustContentInsets={true}
-              scrollEnabled={true}
-              automaticallyAdjustContentInsets={false}
-              height={100}
+              song={song}
+              _addSong={this._addSong}
+              _removeSong={this._removeSong}
             />
           ))}
         </ScrollView>
@@ -199,7 +274,17 @@ const styles = StyleSheet.create({
   },
   webview: {
     backgroundColor: '#282828',
-    height: 80
+    height: 80,
+    borderWidth: 5,
+    borderRadius: 2,
+    margin: 2,
+    padding: 2
+  },
+  message: {
+    backgroundColor: '#282828',
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
   }
 });
 
