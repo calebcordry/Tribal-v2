@@ -9,7 +9,9 @@
     "node": ">=6.4.0"
   },
   "scripts": {
-    "start": "nodemon server",
+    "start": "node server",
+    "start:dev": "nodemon server",
+    "db:start": "mongod",
     "test": "eslint . && PORT=4243 mocha server/test && karma start --single-run",
     "react-native": "node reactNative/node_modules/react-native/local-cli/cli.js start"
   },
