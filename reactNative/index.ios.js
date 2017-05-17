@@ -8,7 +8,9 @@ import {
   TextInput,
   ListView,
   TouchableHighlight,
-  Button
+  Button,
+  ScrollView,
+  WebView
 } from 'react-native';
 
 class Hero extends Component {
@@ -17,7 +19,7 @@ class Hero extends Component {
       <TouchableHighlight onPress={this.props._onPressButton} >
         <View>
           <Text style={styles.hero} >{this.props.name}</Text>
-          <Image source={this.props.image} style={styles.picture}/>
+          <Image source={this.props.image} style={styles.picture} />
         </View>
       </TouchableHighlight>
     );
@@ -72,13 +74,13 @@ export default class reactNative extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-            <Image source={require('./public/images/logo.png')} style={{width: "100%", height: "100%"}} />
+          <Image source={require('./public/images/logo.png')} style={{ width: "100%", height: "100%" }} />
         </View>
-        <View style={styles.profiles}>
+        {/*<View style={styles.profiles}>
           {team.map((hero, index) => (
             <Hero key={index} name={hero.name} image={hero.image} _onPressButton={() => this._onPressButton(hero.name)} />
           ))}
-        </View>
+        </View>*/}
 
         <View style={styles.textInput} >
           <TextInput
@@ -97,15 +99,21 @@ export default class reactNative extends Component {
           />
         </View>
 
-        <Text style={styles.text}>
-          {this.state.text}
-        </Text>
+        <ScrollView style={{borderWidth:1, borderColor : 'gray', flex:1}}>
+          {this.state.songs.map((song, index) => (
+            <WebView
+              key={index}
+              source={{ uri: `https://open.spotify.com/embed?uri=${song.uri}` }}
+              style={styles.webview}
+              allowsInlineMediaPlayback={true}
+              automaticallyAdjustContentInsets={true}
+              scrollEnabled={true}
+              automaticallyAdjustContentInsets={false}
+              height={100}
+            />
+          ))}
+        </ScrollView>  
 
-        <View style={styles.footer}>
-          <Text style={styles.welcome}>
-            [Search results]
-          </Text>
-        </View>
       </View>
     );
   }
@@ -115,7 +123,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: '#282828',
   },
   header: {
@@ -161,11 +169,12 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: "#F8F8F8",
-    height: 100,
+    height: 50,
     width: "100%",
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    marginTop: 10,
   },
   inputBox: {
     backgroundColor: 'white',
@@ -176,18 +185,22 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-  },  
+  },
   button: {
-    marginRight:40,
-    marginLeft:40,
-    marginTop:10,
-    paddingTop:20,
-    paddingBottom:20,
-    backgroundColor:'#68a0cf',
-    borderRadius:10,
+    marginRight: 40,
+    marginLeft: 40,
+    marginTop: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: '#68a0cf',
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff'
-  },  
+  },
+  webview: {
+    backgroundColor: '#282828',
+    height: 80
+  }
 });
 
 AppRegistry.registerComponent('reactNative', () => reactNative);
