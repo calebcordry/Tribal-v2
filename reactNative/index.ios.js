@@ -112,7 +112,7 @@ export default class reactNative extends Component {
               height={100}
             />
           ))}
-        </ScrollView>  
+        </ScrollView>
 
       </View>
     );
