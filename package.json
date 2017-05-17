@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "nodemon server",
-    "test": "eslint . && PORT=4243 mocha server/test && karma start --single-run"
+    "test": "eslint . && PORT=4243 mocha server/test && karma start --single-run",
+    "react-native": "node reactNative/node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
     "angular": "^1.6.4",
