@@ -7,7 +7,8 @@ import {
   Image,
   TextInput,
   ListView,
-  TouchableHighlight
+  TouchableHighlight,
+  Button
 } from 'react-native';
 
 class Hero extends Component {
@@ -15,7 +16,7 @@ class Hero extends Component {
     return (
       <TouchableHighlight onPress={this.props._onPressButton} >
         <View>
-          <Text style={styles.hero} >Mr. {this.props.name}</Text>
+          <Text style={styles.hero} >{this.props.name}</Text>
           <Image source={this.props.image} style={styles.picture}/>
         </View>
       </TouchableHighlight>
@@ -34,14 +35,37 @@ export default class reactNative extends Component {
     super(props);
     this.state = {
       text: '',
+      songs: [],
     };
     this._onPressButton = this._onPressButton.bind(this);
+    this._onSearch = this._onSearch.bind(this);
   }
 
   _onPressButton(name) {
     console.log("You pressed a button");
     const text = "Selected " + name;
     this.setState({ text });
+  }
+
+  _onSearch() {
+
+    /**
+     *  NOTE: NEED TO REFACTOR FOR RELATIVE ADDRESS
+     */
+
+    return fetch(`http://localhost:4242/tracks?trackName=${this.state.text}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((songs) => {
+        console.log('fetch: ', songs);
+        this.setState({ songs });
+      })
+      .catch((err) => console.warn('fetch error: ', err));
   }
 
   render() {
@@ -59,8 +83,17 @@ export default class reactNative extends Component {
         <View style={styles.textInput} >
           <TextInput
             style={styles.inputBox}
-            placeholder="Enter your name: "
+            placeholder="Search songs or artist"
             onChangeText={(text) => this.setState({ text })}
+          />
+          <Button
+            title="Search"
+            style={styles.button}
+            onPress={this._onSearch}
+            raised={true}
+            backgrounColor='#Foo'
+            theme='light'
+            textColor='white'
           />
         </View>
 
@@ -70,7 +103,7 @@ export default class reactNative extends Component {
 
         <View style={styles.footer}>
           <Text style={styles.welcome}>
-            End of App!
+            [Search results]
           </Text>
         </View>
       </View>
@@ -105,10 +138,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   picture: {
-    margin: 2,
+    margin: 20,
     padding: 2,
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
   },
   welcome: {
     fontSize: 20,
@@ -129,22 +162,32 @@ const styles = StyleSheet.create({
   textInput: {
     borderColor: "#F8F8F8",
     height: 100,
-    width: 100,
+    width: "100%",
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    margin: 10,
   },
   inputBox: {
+    backgroundColor: 'white',
     borderColor: "#F8F8F8",
     height: 40,
-    width: 250,
-    backgroundColor: 'white',
+    width: 200,
     textAlign: 'center',
   },
   text: {
     color: 'white',
-  },
+  },  
+  button: {
+    marginRight:40,
+    marginLeft:40,
+    marginTop:10,
+    paddingTop:20,
+    paddingBottom:20,
+    backgroundColor:'#68a0cf',
+    borderRadius:10,
+    borderWidth: 1,
+    borderColor: '#fff'
+  },  
 });
 
 AppRegistry.registerComponent('reactNative', () => reactNative);
