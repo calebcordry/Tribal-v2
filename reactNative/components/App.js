@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import {
   Text,
   View,
@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 
+import { selectSongs, fetchPostsIfNeeded, invalidateSongs } from '../actions';
 import styles from './css/styles.css';
 
 // Import components
@@ -19,7 +20,7 @@ let messageInterval;
 
 // MAIN COMPONENT
 
-export default class reactNative extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,6 +78,7 @@ export default class reactNative extends Component {
   }
 
   render() {
+    console.log({ props: this.props });
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -124,3 +126,25 @@ export default class reactNative extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { songsByQuery, currentQuery } = state;
+  debugger;
+  const {
+    isFetching,
+    lastUpdated,
+    items: songs,
+  } = songsByQuery[currentQuery] || {
+    isFetching: true,
+    items: [],
+  };
+
+  return {
+    currentQuery,
+    songs,
+    isFetching,
+    lastUpdated,
+  };
+};
+
+export default connect(mapStateToProps)(App);
