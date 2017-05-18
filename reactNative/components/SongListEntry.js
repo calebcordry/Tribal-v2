@@ -14,9 +14,9 @@ class SongListEntry extends Component {
     };
   }
 
-  onSwipe(gestureName, gestureState) {
+  onSwipe(gestureName) {
     const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
-    this.setState({ gestureName: gestureName });
+    this.setState({ gestureName });
     switch (gestureName) {
       case SWIPE_UP:
         this.setState({ backgroundColor: 'red' });
@@ -25,12 +25,20 @@ class SongListEntry extends Component {
         this.setState({ backgroundColor: 'green' });
         break;
       case SWIPE_LEFT:
-        this.props._removeSong(this.props.song, 'Song removed')
-        this.setState({ backgroundColor: '#282828', onPlaylist: false, opacity: 1 }, () => console.log('Swipe left: ', this.state));
+        this.props._removeSong(this.props.song, 'Song removed');
+        this.setState(
+          { backgroundColor: '#282828', onPlaylist: false, opacity: 1 },
+          () => console.log('Swipe left: ', this.state),
+        );
         break;
       case SWIPE_RIGHT:
-        this.props._addSong(this.props.song, 'Song added')
-        this.setState({ backgroundColor: 'red', onPlaylist: true, opacity: 0.3 }, () => console.log('Swipe right: ', this.state));
+        this.props._addSong(this.props.song, 'Song added');
+        this.setState(
+          { backgroundColor: 'red', onPlaylist: true, opacity: 0.3 },
+          () => console.log('Swipe right: ', this.state),
+        );
+        break;
+      default:
         break;
     }
   }
@@ -51,9 +59,9 @@ class SongListEntry extends Component {
           key={this.props.index}
           source={{ uri: `https://open.spotify.com/embed?uri=${this.props.song.uri}` }}
           style={[styles.webview, { opacity: this.state.opacity }]}
-          allowsInlineMediaPlayback={true}
-          automaticallyAdjustContentInsets={true}
-          scrollEnabled={true}
+          allowsInlineMediaPlayback
+          automaticallyAdjustContentInsets
+          scrollEnabled
           height={100}
         />
       </GestureRecognizer>

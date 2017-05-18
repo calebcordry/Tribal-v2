@@ -1,10 +1,17 @@
 import { combineReducers } from 'redux';
 
 import {
-  REQUEST_SONGS,
-  RECEIVE_SONGS,
-  INVALIDATE_SONGS,
+  REQUEST_SONGS, RECEIVE_SONGS, INVALIDATE_SONGS, UPDATE_QUERY,
 } from '../actions';
+
+const currentQuery = (state = '', action) => {
+  switch (action.type) {
+    case UPDATE_QUERY:
+      return action.query;
+    default:
+      return state;
+  }
+};
 
 const songs = (state = {
   isFetching: false,
@@ -28,7 +35,7 @@ const songs = (state = {
         ...state,
         isFetching: false,
         didInvalidate: false,
-        items: action.posts,
+        items: action.songs,
         lastUpdated: action.receivedAt,
       };
     default:
@@ -36,7 +43,7 @@ const songs = (state = {
   }
 };
 
-const postsByQuery = (state = { }, action) => {
+const songsByQuery = (state = { }, action) => {
   switch (action.type) {
     case INVALIDATE_SONGS:
     case RECEIVE_SONGS:
@@ -51,7 +58,8 @@ const postsByQuery = (state = { }, action) => {
 };
 
 const rootReducer = combineReducers({
-  postsByQuery,
+  songsByQuery,
+  currentQuery,
 });
 
 export default rootReducer;
