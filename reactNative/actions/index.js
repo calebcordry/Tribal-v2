@@ -18,8 +18,16 @@ const fetchSongs = query => (dispatch) => {
   dispatch(requestSongs(query));
 
   return fetch(`http://localhost:4242/tracks?trackName=${query}`)
-    .then(response => response.json())
-    .then(json => dispatch(receiveSongs(query, json)));
+  .then(response => response.json())
+  .then(json => dispatch(receiveSongs(query, json)));
+
+  // try {
+  //   const response = await fetch(`http://localhost:4242/tracks?trackName=${query}`);
+  //   const json = await response.json();
+  //   dispatch(receiveSongs(query, json)));
+  // } catch (err) {
+  //   console.error(err);
+  // }
 };
 
 const shouldFetchSongs = (state, query) => {

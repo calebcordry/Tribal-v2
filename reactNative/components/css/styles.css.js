@@ -36,7 +36,7 @@ module.exports = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
-    color: '#F8F8F8'
+    color: '#F8F8F8',
   },
   instructions: {
     textAlign: 'center',
