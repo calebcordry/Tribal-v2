@@ -9,7 +9,8 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { selectSongs, fetchPostsIfNeeded, invalidateSongs } from '../actions';
+import { fetchSongsIfNeeded, updateQuery } from '../actions';
+
 import styles from './css/styles.css';
 
 // Import components
@@ -23,14 +24,10 @@ let messageInterval;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      text: '',
-      songs: [],
-      message: '',
-      loading: false,
-    };
 
-    this._onPressButton = this._onPressButton.bind(this);
+    this.state = { message: '' };
+
+    this._onChangeText = this._onChangeText.bind(this);
     this._onSearch = this._onSearch.bind(this);
     this._addSong = this._addSong.bind(this);
     this._removeSong = this._removeSong.bind(this);
@@ -39,53 +36,45 @@ class App extends Component {
   _addSong(song, message) {
     clearInterval(messageInterval);
     this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` }, () => {
-      messageInterval = setInterval(() => this.setState({ message: '' }), 3500);
+      setTimeout(() => this.setState({ message: '' }), 3500);
     });
   }
 
   _removeSong(song, message) {
     this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` }, () => {
-      messageInterval = setInterval(() => this.setState({ message: '' }), 3500);
+      setTimeout(() => this.setState({ message: '' }), 3500);
     });
   }
 
-  _onPressButton(name) {
-    console.log('You pressed a button');
-    const text = `Selected ${name}`;
-    this.setState({ text });
+  _onChangeText(name) {
+    const { dispatch } = this.props;
+    dispatch(updateQuery(name));
   }
 
   _onSearch() {
-    this.setState({ songs: [], loading: true });
-
-    return fetch(`https://tribal-global-mobile.herokuapp.com/tracks?trackName=${this.state.text}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((songs) => {
-        console.log('fetch: ', songs);
-        this.setState({ songs, loading: false });
-      })
-      .catch(err => console.warn('fetch error: ', err));
+    const { dispatch, currentQuery } = this.props;
+    dispatch(fetchSongsIfNeeded(currentQuery));
   }
 
   render() {
-    console.log({ props: this.props });
+    const { message } = this.state;
+    const { isFetching, songs } = this.props;
+    const isEmpty = songs.length === 0;
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image source={require('../public/images/logo.png')} style={{ width: '100%', height: '100%' }} />
+          <Image
+            source={require('../public/images/logo.png')}
+            style={{ width: '100%', height: '100%' }}
+          />
         </View>
 
         <View style={styles.textInput} >
           <TextInput
             style={styles.inputBox}
             placeholder="Search songs or artist"
-            onChangeText={text => this.setState({ text })}
+            onChangeText={this._onChangeText}
           />
           <Button
             title="Search"
@@ -99,22 +88,21 @@ class App extends Component {
         </View>
 
         <ScrollView style={{ borderWidth: 1, borderColor: 'gray', flex: 3 }}>
-
-          {this.state.loading && <Loading /> }
-
-          {!this.state.loading && this.state.songs.map(song => (
-            <SongListEntry
-              key={song.uri}
-              song={song}
-              _addSong={this._addSong}
-              _removeSong={this._removeSong}
-            />
+          {isEmpty                                                //eslint-disable-line
+            ? (isFetching ? <Loading /> : <Text>Empty.</Text>)
+            : songs.map(song => (
+              <SongListEntry
+                key={song.uri}
+                song={song}
+                _addSong={this._addSong}
+                _removeSong={this._removeSong}
+              />
           ))}
         </ScrollView>
 
-        {this.state.message !== '' &&
+        {message !== '' &&
           <View style={styles.messageBox}>
-            <Text style={styles.message}>{this.state.message}</Text>
+            <Text style={styles.message}>{message}</Text>
           </View>
         }
 
@@ -125,14 +113,13 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   const { songsByQuery, currentQuery } = state;
-  debugger;
   const {
     isFetching,
     lastUpdated,
-    items: songs,
+    songs,
   } = songsByQuery[currentQuery] || {
-    isFetching: true,
-    items: [],
+    isFetching: false,
+    songs: [],
   };
 
   return {

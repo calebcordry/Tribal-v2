@@ -16,7 +16,7 @@ const currentQuery = (state = '', action) => {
 const songs = (state = {
   isFetching: false,
   didInvalidate: false,
-  items: [],
+  songs: [],
 }, action) => {
   switch (action.type) {
     case INVALIDATE_SONGS:
@@ -35,7 +35,7 @@ const songs = (state = {
         ...state,
         isFetching: false,
         didInvalidate: false,
-        items: action.songs,
+        songs: action.songs,
         lastUpdated: action.receivedAt,
       };
     default:
@@ -43,7 +43,7 @@ const songs = (state = {
   }
 };
 
-const songsByQuery = (state = { }, action) => {
+const songsByQuery = (state = {}, action) => {
   switch (action.type) {
     case INVALIDATE_SONGS:
     case RECEIVE_SONGS:
