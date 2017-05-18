@@ -106,7 +106,7 @@ export default class reactNative extends Component {
 
           {!this.state.loading && this.state.songs.map(song => (
             <SongListEntry
-              key={song}
+              key={song.uri}
               song={song}
               _addSong={this._addSong}
               _removeSong={this._removeSong}
