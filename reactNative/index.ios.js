@@ -10,9 +10,9 @@ import {
   TouchableHighlight,
   Button,
   ScrollView,
-  WebView
+  WebView,
 } from 'react-native';
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
 class Hero extends Component {
   render() {
@@ -27,6 +27,12 @@ class Hero extends Component {
   }
 }
 
+const Loading = () => (
+  <View style={styles.loading}>
+    <Image source={require('./public/images/loading.gif')} />
+  </View>
+);
+
 const team = [
   { name: 'Caleb', image: require('./public/images/caleb.jpg') },
   { name: 'Carlo', image: require('./public/images/carlo.jpg') },
@@ -40,8 +46,8 @@ class SongListEntry extends Component {
       gestureName: 'none',
       backgroundColor: '#fff',
       onPlaylist: false,
-      opacity: 1
-    }
+      opacity: 1,
+    };
   }
 
   onSwipe(gestureName, gestureState) {
@@ -55,12 +61,12 @@ class SongListEntry extends Component {
         this.setState({ backgroundColor: 'green' });
         break;
       case SWIPE_LEFT:
-        this.props._removeSong(this.props.song, 'Song removed')  
-        this.setState({ backgroundColor: '#282828', onPlaylist: false, opacity: 1 }, () => console.log('Swipe left: ', this.state));  
+        this.props._removeSong(this.props.song, 'Song removed')
+        this.setState({ backgroundColor: '#282828', onPlaylist: false, opacity: 1 }, () => console.log('Swipe left: ', this.state));
         break;
       case SWIPE_RIGHT:
-        this.props._addSong(this.props.song, 'Song added')  
-        this.setState({ backgroundColor: 'red', onPlaylist: true, opacity: 0.3 }, () => console.log('Swipe right: ', this.state));  
+        this.props._addSong(this.props.song, 'Song added')
+        this.setState({ backgroundColor: 'red', onPlaylist: true, opacity: 0.3 }, () => console.log('Swipe right: ', this.state));
         break;
     }
   }
@@ -76,12 +82,12 @@ class SongListEntry extends Component {
       <GestureRecognizer
         onSwipe={(direction, state) => this.onSwipe(direction, state)}
         config={config}
-        style={{borderColor: this.state.borderColor}}
+        style={{ borderColor: this.state.borderColor }}
       >
         <WebView
           key={this.props.index}
           source={{ uri: `https://open.spotify.com/embed?uri=${this.props.song.uri}` }}
-          style={[styles.webview, {opacity: this.state.opacity}]}
+          style={[styles.webview, { opacity: this.state.opacity }]}
           allowsInlineMediaPlayback={true}
           automaticallyAdjustContentInsets={true}
           scrollEnabled={true}
@@ -93,13 +99,16 @@ class SongListEntry extends Component {
   }
 }
 
+let messageInterval;
+
 export default class reactNative extends Component {
   constructor(props) {
     super(props);
     this.state = {
       text: '',
       songs: [],
-      message: ''
+      message: '',
+      loading: false,
     };
     this._onPressButton = this._onPressButton.bind(this);
     this._onSearch = this._onSearch.bind(this);
@@ -108,24 +117,30 @@ export default class reactNative extends Component {
   }
 
   _addSong(song, message) {
-    this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` });
+    clearInterval(messageInterval);
+    this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` }, () => {
+      messageInterval = setInterval(() => this.setState({ message: '' }), 3500);
+    });
   }
 
   _removeSong(song, message) {
-    this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` });
+    this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` }, () => {
+      messageInterval = setInterval(() => this.setState({ message: '' }), 3500);
+    });
   }
 
   _onPressButton(name) {
-    console.log("You pressed a button");
-    const text = "Selected " + name;
+    console.log('You pressed a button');
+    const text = `Selected ${name}`;
     this.setState({ text });
   }
 
   _onSearch() {
-
     /**
      *  NOTE: NEED TO REFACTOR FOR RELATIVE ADDRESS
      */
+
+    this.setState({ songs: [], loading: true });
 
     return fetch(`http://localhost:4242/tracks?trackName=${this.state.text}`, {
       method: 'GET',
@@ -137,16 +152,16 @@ export default class reactNative extends Component {
       .then((response) => response.json())
       .then((songs) => {
         console.log('fetch: ', songs);
-        this.setState({ songs });
+        this.setState({ songs, loading: false });
       })
-      .catch((err) => console.warn('fetch error: ', err));
+      .catch(err => console.warn('fetch error: ', err));
   }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image source={require('./public/images/logo.png')} style={{ width: "100%", height: "100%" }} />
+          <Image source={require('./public/images/logo.png')} style={{ width: '100%', height: '100%' }} />
         </View>
         {/*<View style={styles.profiles}>
           {team.map((hero, index) => (
@@ -157,7 +172,7 @@ export default class reactNative extends Component {
         <View style={styles.textInput} >
           <TextInput
             style={styles.inputBox}
-            placeholder="Search songs or artist"
+            placeholder='Search songs or artist'
             onChangeText={(text) => this.setState({ text })}
           />
           <Button
@@ -165,21 +180,19 @@ export default class reactNative extends Component {
             style={styles.button}
             onPress={this._onSearch}
             raised={true}
-            backgrounColor='#Foo'
-            theme='light'
-            textColor='white'
+            backgrounColor="#f00"
+            theme="light"
+            textColor="white"
           />
         </View>
 
+        <ScrollView style={{ borderWidth: 1, borderColor: 'gray', flex: 3 }}>
 
-        {this.state.message !== '' &&
-          <View>
-            <Text style={styles.message}>{this.state.message}</Text>
-          </View>
-        }  
+          {this.state.loading &&
+            <Loading />
+          }
 
-        <ScrollView style={{borderWidth:1, borderColor : 'gray', flex:1}}>
-          {this.state.songs.map((song, index) => (
+          {!this.state.loading && this.state.songs.map((song, index) => (
             <SongListEntry
               key={index}
               song={song}
@@ -188,6 +201,12 @@ export default class reactNative extends Component {
             />
           ))}
         </ScrollView>
+
+        {this.state.message !== '' &&
+          <View style={styles.messageBox}>
+            <Text style={styles.message}>{this.state.message}</Text>
+          </View>
+        }
 
       </View>
     );
@@ -202,14 +221,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#282828',
   },
   header: {
-    width: "100%",
+    width: '100%',
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#686868',
   },
   footer: {
-    width: "100%",
+    width: '100%',
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
@@ -243,9 +262,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   textInput: {
-    borderColor: "#F8F8F8",
+    borderColor: '#F8F8F8',
     height: 50,
-    width: "100%",
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-around',
@@ -253,7 +272,7 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     backgroundColor: 'white',
-    borderColor: "#F8F8F8",
+    borderColor: '#F8F8F8',
     height: 40,
     width: 200,
     textAlign: 'center',
@@ -270,22 +289,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#68a0cf',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#fff'
+    borderColor: '#fff',
   },
   webview: {
     backgroundColor: '#282828',
     height: 80,
-    borderWidth: 5,
-    borderRadius: 2,
-    margin: 2,
-    padding: 2
   },
   message: {
     backgroundColor: '#282828',
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
+  messageBox: {
+    height: 75,
+    margin: 10,
+    padding: 5,
+  },
+  loading: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 450,
+  },
 });
 
 AppRegistry.registerComponent('reactNative', () => reactNative);
