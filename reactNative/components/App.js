@@ -56,13 +56,9 @@ class App extends Component {
   }
 
   _onSearch() {
-    /**
-     *  NOTE: NEED TO REFACTOR FOR RELATIVE ADDRESS
-     */
-
     this.setState({ songs: [], loading: true });
 
-    return fetch(`http://localhost:4242/tracks?trackName=${this.state.text}`, {
+    return fetch(`https://tribal-global-mobile.herokuapp.com/tracks?trackName=${this.state.text}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
