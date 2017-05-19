@@ -27,7 +27,7 @@ export const receiveSongs = (query, songs) => ({
 
 const fetchSongs = query => (dispatch) => {
   dispatch(requestSongs(query));
-  return fetch(`http://tribal-global-mobile.herokuapp.com/tracks?trackName=${query}`)
+  return fetch(`https://tribal-global-mobile.herokuapp.com/tracks?trackName=${query}`)
   .then(response => response.json())
   .then(songs => dispatch(receiveSongs(query, songs)));
 };
