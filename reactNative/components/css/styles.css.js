@@ -4,8 +4,12 @@ module.exports = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    // alignItems: 'center',
     backgroundColor: '#282828',
+  },
+  headerBar: {
+    height: 20,
+    justifyContent: 'space-between',
+    backgroundColor: 'lightgray',
   },
   header: {
     width: '100%',
