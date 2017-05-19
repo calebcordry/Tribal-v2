@@ -1,10 +1,20 @@
 {
   "images" : [
     {
+      "idiom" : "iphone",
+      "size" : "20x20",
+      "scale" : "2x"
+    },
+    {
       "size" : "20x20",
       "idiom" : "iphone",
       "filename" : "recordPlayer60.png",
       "scale" : "3x"
+    },
+    {
+      "idiom" : "iphone",
+      "size" : "29x29",
+      "scale" : "1x"
     },
     {
       "size" : "29x29",

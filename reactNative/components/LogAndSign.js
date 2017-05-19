@@ -1,43 +1,69 @@
 import React, { Component } from 'react';
-
 import {
-  StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  Image,
+  Button,
 } from 'react-native';
+import styles from './css/styles.css';
+
 
 class LogAndSign extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      password: ''
-    }
+      password: '',
+      message: '',
+    };
   }
   render() {
+    const { message } = this.state;
+
     return (
-      <View>
-        <Text>LogIn/SignUp</Text>
-        <TextInput 
-          style={styles.inputBox}
-          placeholder='username'
-          onChangeText={(text) => this.setState({ username: text })} />
-        <TextInput
-          style={styles.inputBox}
-          placeholder='password'
-          onChangeText={(text) => this.setState({ password: text })} />
+
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Image
+            source={require('../public/images/logo.png')}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </View>
+
+        <View style={{ flex: 1, backgroundColor: 'red', width: '100%' }}>
+          <Text>LogIn/SignUp</Text>
+          <TextInput
+            style={styles.inputBox}
+            placeholder="username"
+            onChangeText={text => this.setState({ username: text })}
+          />
+          <TextInput
+            style={styles.inputBox}
+            placeholder="password"
+            onChangeText={text => this.setState({ password: text })}
+          />
+          <Button
+            title="login"
+            style={styles.button}
+            onPress={this.props._login}
+            raised
+            backgroundColor="black"
+            theme="light"
+            textColor="red"
+          />
+        </View>
+
+
+        {message !== '' &&
+          <View style={styles.messageBox}>
+            <Text style={styles.message}>{message}</Text>
+          </View>
+        }
       </View>
-    )
+
+    );
   }
 }
 
-const styles = StyleSheet.create({
-   inputBox: {
-    backgroundColor: 'white',
-    borderColor: "#F8F8F8",
-    height: 20,
-    width: 100,
-    textAlign: 'center',
-  }
-})
+export default LogAndSign;
