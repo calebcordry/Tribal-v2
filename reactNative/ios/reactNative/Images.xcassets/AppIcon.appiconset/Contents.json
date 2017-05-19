@@ -3,6 +3,7 @@
     {
       "idiom" : "iphone",
       "size" : "20x20",
+      "filename" : "recordPlayer40.png",
       "scale" : "2x"
     },
     {
@@ -37,7 +38,7 @@
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "recordPlayer120-1.png",
+      "filename" : "recordPlayer120.png",
       "scale" : "3x"
     },
     {
