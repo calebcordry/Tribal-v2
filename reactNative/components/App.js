@@ -85,7 +85,7 @@ class App extends Component {
         _onSearch={this._onSearch}
         _onChangeText={this._onChangeText}
         _addSong={this._addSong}
-        _removeSong={this._onRemoveSong}
+        _removeSong={this._removeSong}
         message={this.state.message}
       />
     );

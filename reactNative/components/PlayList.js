@@ -13,7 +13,7 @@ import styles from './css/styles.css';
 import Loading from './Loading';
 import SongListEntry from './SongListEntry';
 
-const PlayList = ({
+const Search = ({
   isFetching, message, songs, _onChangeText, _onSearch, _addSong, _removeSong,
 }) => (
   <View style={styles.container}>
@@ -84,4 +84,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(PlayList);
+export default connect(mapStateToProps)(Search);
