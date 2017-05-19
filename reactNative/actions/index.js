@@ -2,6 +2,8 @@ export const REQUEST_SONGS = 'REQUEST_SONGS';
 export const RECEIVE_SONGS = 'RECEIVE_SONGS';
 export const UPDATE_QUERY = 'UPDATE_QUERY';
 export const INVALIDATE_SONGS = 'INVALIDATE_SONGS';
+export const ADD_TO_PLAYLIST = 'ADD_TO_PLAYLIST';
+export const REMOVE_FROM_PLAYLIST = 'REMOVE_FROM_PLAYLIST';
 
 export const updateQuery = query => ({
   type: UPDATE_QUERY,
@@ -21,8 +23,18 @@ export const requestSongs = query => ({
 export const receiveSongs = (query, songs) => ({
   type: RECEIVE_SONGS,
   query,
-  songs,  // data.children.map(child => child.data) FORMAT RESPONSE HERE
+  songs,
   receivedAt: Date.now(),
+});
+
+export const addToPlaylist = song => ({
+  type: ADD_TO_PLAYLIST,
+  song,
+});
+
+export const removeFromPlaylist = song => ({
+  type: REMOVE_FROM_PLAYLIST,
+  song,
 });
 
 const fetchSongs = query => (dispatch) => {

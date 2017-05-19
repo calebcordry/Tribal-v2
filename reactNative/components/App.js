@@ -10,7 +10,9 @@ import {
   TabBarIOS,
 } from 'react-native';
 
-import { fetchSongsIfNeeded, updateQuery } from '../actions';
+import {
+  fetchSongsIfNeeded, updateQuery, addToPlaylist, removeFromPlaylist,
+} from '../actions';
 
 import styles from './css/styles.css';
 
@@ -49,12 +51,18 @@ class App extends Component {
     this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` }, () => {
       setTimeout(() => this.setState({ message: '' }), 3500);
     });
+
+    const { dispatch } = this.props;
+    dispatch(addToPlaylist(song));
   }
 
   _removeSong(song, message) {
     this.setState({ message: `[${song.artist}] ${song.uri} **${message}** ` }, () => {
       setTimeout(() => this.setState({ message: '' }), 3500);
     });
+
+    const { dispatch } = this.props;
+    dispatch(removeFromPlaylist(song));
   }
 
   _onChangeText(name) {
@@ -171,7 +179,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { songsByQuery, currentQuery } = state;
+  const { songsByQuery, currentQuery, playlist } = state;
   const {
     isFetching,
     lastUpdated,
@@ -183,6 +191,7 @@ const mapStateToProps = (state) => {
 
   return {
     currentQuery,
+    playlist,
     songs,
     isFetching,
     lastUpdated,

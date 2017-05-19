@@ -1,7 +1,12 @@
 import { combineReducers } from 'redux';
 
 import {
-  REQUEST_SONGS, RECEIVE_SONGS, INVALIDATE_SONGS, UPDATE_QUERY,
+  REQUEST_SONGS,
+  RECEIVE_SONGS,
+  INVALIDATE_SONGS,
+  UPDATE_QUERY,
+  ADD_TO_PLAYLIST,
+  REMOVE_FROM_PLAYLIST,
 } from '../actions';
 
 const currentQuery = (state = '', action) => {
@@ -57,9 +62,21 @@ const songsByQuery = (state = {}, action) => {
   }
 };
 
+const playlist = (state = [], action) => {
+  switch (action.type) {
+    case ADD_TO_PLAYLIST:
+      return [...state, action.song];
+    case REMOVE_FROM_PLAYLIST:
+      return state.filter(song => song.uri !== action.song.uri);
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   songsByQuery,
   currentQuery,
+  playlist,
 });
 
 export default rootReducer;
