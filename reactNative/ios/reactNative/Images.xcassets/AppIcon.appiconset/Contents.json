@@ -4,10 +4,14 @@
       "idiom" : "iphone",
       "size" : "20x20",
 <<<<<<< HEAD
+<<<<<<< HEAD
       "filename" : "recordPlayer40.png",
 =======
       "filename" : "recordPlayer58.png",
 >>>>>>> fix login
+=======
+      "filename" : "recordPlayer40.png",
+>>>>>>> icons fix
       "scale" : "2x"
     },
     {
