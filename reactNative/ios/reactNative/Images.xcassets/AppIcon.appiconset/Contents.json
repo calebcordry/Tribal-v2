@@ -3,7 +3,11 @@
     {
       "idiom" : "iphone",
       "size" : "20x20",
+<<<<<<< HEAD
       "filename" : "recordPlayer40.png",
+=======
+      "filename" : "recordPlayer58.png",
+>>>>>>> fix login
       "scale" : "2x"
     },
     {
