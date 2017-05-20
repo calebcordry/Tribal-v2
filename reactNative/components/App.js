@@ -12,7 +12,7 @@ import {
 import icons from '../public/images/icons';
 
 // Import components
-import LogAndSign from './LogAndSign';
+import Login from './Login';
 import Search from './Search';
 import PlayList from './PlayList';
 
@@ -116,7 +116,7 @@ class App extends Component {
             }}
           >
             <View>
-              <LogAndSign
+              <Login
                 _login={this._login}
               />
             </View>
