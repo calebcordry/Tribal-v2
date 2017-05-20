@@ -102,6 +102,18 @@ module.exports = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 450,
+    height: 350,
+  },
+  picker: {
+    width: '100%',
+  },
+  pickerView: {
+    flex: 0.4,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    width: '100%',
+    height: 100,
+    backgroundColor: '#282828',
   },
 });
