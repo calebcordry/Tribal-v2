@@ -64,8 +64,10 @@ const songsByQuery = (state = {}, action) => {
 
 const playlist = (state = [], action) => {
   switch (action.type) {
-    case ADD_TO_PLAYLIST:
-      return [...state, action.song];
+    case ADD_TO_PLAYLIST: {
+      const newState = state.filter(song => song.uri !== action.song.uri);
+      return [...newState, action.song];
+    }
     case REMOVE_FROM_PLAYLIST:
       return state.filter(song => song.uri !== action.song.uri);
     default:

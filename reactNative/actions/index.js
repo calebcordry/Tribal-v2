@@ -1,9 +1,11 @@
 export const REQUEST_SONGS = 'REQUEST_SONGS';
 export const RECEIVE_SONGS = 'RECEIVE_SONGS';
-export const UPDATE_QUERY = 'UPDATE_QUERY';
 export const INVALIDATE_SONGS = 'INVALIDATE_SONGS';
 export const ADD_TO_PLAYLIST = 'ADD_TO_PLAYLIST';
 export const REMOVE_FROM_PLAYLIST = 'REMOVE_FROM_PLAYLIST';
+export const ADD_USER_PLAYLIST = 'ADD_USER_PLAYLIST';
+export const REMOVE_USER_PLAYLIST = 'REMOVE_USER_PLAYLIST';
+export const UPDATE_QUERY = 'UPDATE_QUERY';
 
 export const updateQuery = query => ({
   type: UPDATE_QUERY,
