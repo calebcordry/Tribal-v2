@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Text,
   View,
-  Image,
-  TextInput,
-  Button,
-  ScrollView,
   TabBarIOS,
 } from 'react-native';
 
@@ -14,15 +9,12 @@ import {
   fetchSongsIfNeeded, updateQuery, addToPlaylist, removeFromPlaylist,
 } from '../actions';
 
-import styles from './css/styles.css';
-
 import icons from '../public/images/icons';
 
 // Import components
-import SongListEntry from './SongListEntry';
-import Loading from './Loading';
 import LogAndSign from './LogAndSign';
 import Search from './Search';
+import PlayList from './PlayList';
 
 const playListIcon = icons.playListIcon;
 const searchIcon = icons.searchIcon;
@@ -93,9 +85,7 @@ class App extends Component {
 
   _renderPlayList() {
     return (
-      <Search
-        _onSearch={this._onSearch}
-        _onChangeText={this._onChangeText}
+      <PlayList
         _addSong={this._addSong}
         _removeSong={this._onRemoveSong}
         message={this.state.message}

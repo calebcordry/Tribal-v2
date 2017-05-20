@@ -26,8 +26,17 @@ class login extends Component {
   render() {
     return (
       <View style={styles.container}>
+<<<<<<< HEAD
         <View style={styles.row}>
           <Text style={styles.title}>Signup/Login below</Text>
+=======
+        <View style={styles.headerBar} />
+        <View style={styles.header}>
+          <Image
+            source={require('../public/images/logo.png')}
+            style={{ width: '100%', height: '100%' }}
+          />
+>>>>>>> playlist render complete
         </View>
         <View style={styles.row}>
             <Button 

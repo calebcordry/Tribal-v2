@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { WebView } from 'react-native';
 import styles from './css/styles.css';
+
+import { addToPlaylist, removeFromPlaylist } from '../actions';
 
 class SongListEntry extends Component {
   constructor(props) {
@@ -15,6 +18,7 @@ class SongListEntry extends Component {
   }
 
   onSwipe(gestureName) {
+    // const { dispatch } = this.props;
     const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
     this.setState({ gestureName });
     switch (gestureName) {
@@ -25,18 +29,15 @@ class SongListEntry extends Component {
         this.setState({ backgroundColor: 'green' });
         break;
       case SWIPE_LEFT:
+        // dispatch(removeFromPlaylist(this.props.song));
         this.props._removeSong(this.props.song, 'Song removed');
-        this.setState(
-          { backgroundColor: '#282828', onPlaylist: false, opacity: 1 },
-          () => console.log('Swipe left: ', this.state),
-        );
+        this.setState({ backgroundColor: '#282828', onPlaylist: false, opacity: 1 });
         break;
       case SWIPE_RIGHT:
+        // dispatch(addToPlaylist(this.props.song));
         this.props._addSong(this.props.song, 'Song added');
         this.setState(
-          { backgroundColor: 'red', onPlaylist: true, opacity: 0.3 },
-          () => console.log('Swipe right: ', this.state),
-        );
+          { backgroundColor: 'red', onPlaylist: true, opacity: 0.3 });
         break;
       default:
         break;
@@ -69,4 +70,25 @@ class SongListEntry extends Component {
   }
 }
 
-export default SongListEntry;
+const mapStateToProps = (state) => {
+  const { songsByQuery, currentQuery, playlist } = state;
+  const {
+    isFetching,
+    lastUpdated,
+    songs,
+  } = songsByQuery[currentQuery] || {
+    isFetching: false,
+    songs: [],
+  };
+
+  return {
+    currentQuery,
+    playlist,
+    songs,
+    isFetching,
+    lastUpdated,
+  };
+};
+
+export default connect(mapStateToProps)(SongListEntry);
+

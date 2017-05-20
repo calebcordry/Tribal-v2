@@ -1,72 +1,80 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
   Text,
   View,
-  TextInput,
   Image,
-  Button,
   ScrollView,
+  Picker,
 } from 'react-native';
 import styles from './css/styles.css';
 import Loading from './Loading';
 import SongListEntry from './SongListEntry';
 
-const Search = ({
-  isFetching, message, songs, _onChangeText, _onSearch, _addSong, _removeSong,
-}) => (
-  <View style={styles.container}>
+//   isFetching, message, songs, _onChangeText, _onSearch, _addSong, _removeSong,
+// }) =>
 
-    <View style={styles.headerBar} />
+class PlayList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPlayList: '',
+    };
+  }
 
-    <View style={styles.header}>
-      <Image
-        source={require('../public/images/logo.png')}
-        style={{ width: '100%', height: '100%' }}
-      />
-    </View>
+  render() {
+    const { message, isFetching, songs, _addSong, _removeSong, playlist } = this.props;
+    const isEmpty = songs.length === 0;
 
-    <View style={styles.textInput} >
-      <TextInput
-        style={styles.inputBox}
-        placeholder="Search songs or artist"
-        onChangeText={_onChangeText}
-      />
-      <Button
-        title="Search"
-        style={styles.button}
-        onPress={_onSearch}
-        raised
-        backgrounColor="#f00"
-        theme="light"
-        textColor="white"
-      />
-    </View>
+    return (
+      <View style={styles.container}>
 
-    <ScrollView style={{ flex: 3 }}>
-      {(songs.length === 0)                                                //eslint-disable-line
-        ? (isFetching ? <Loading /> : <Text>Empty.</Text>)
-        : songs.map(song => (
-          <SongListEntry
-            key={song.uri}
-            song={song}
-            _addSong={_addSong}
-            _removeSong={_removeSong}
+        <View style={styles.headerBar} />
+
+        <View style={styles.header}>
+          <Image
+            source={require('../public/images/logo.png')}
+            style={{ width: '100%', height: '100%' }}
           />
-        ))}
-    </ScrollView>
+        </View>
 
-    {message !== '' &&
-      <View style={styles.messageBox}>
-        <Text style={styles.message}>{message}</Text>
+        <View style={styles.pickerView} >
+          <Picker
+            style={styles.picker}
+            selectedValue="hello"
+            onValueChange={currentPlayList => this.setState({ currentPlayList })}
+          >
+            <Picker.Item color="white" label="Playlist 1" value="1" />
+            <Picker.Item color="white" label="Playlist 2" value="2" />
+          </Picker>
+        </View>
+
+        <ScrollView style={{ flex: 1 }}>
+          {isEmpty                                                //eslint-disable-line
+            ? (isFetching ? <Loading /> : <Text>Empty.</Text>)
+            : playlist.map(song => (
+              <SongListEntry
+                key={song.uri}
+                song={song}
+                _addSong={_addSong}
+                _removeSong={_removeSong}
+              />
+            ))}
+        </ScrollView>
+
+        {message !== '' &&
+          <View style={styles.messageBox}>
+            <Text style={styles.message}>{message}</Text>
+          </View>
+        }
       </View>
-    }
-  </View>
-);
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
-  const { songsByQuery, currentQuery } = state;
+  const { songsByQuery, currentQuery, playlist } = state;
   const {
     isFetching,
     lastUpdated,
@@ -81,7 +89,8 @@ const mapStateToProps = (state) => {
     songs,
     isFetching,
     lastUpdated,
+    playlist,
   };
 };
 
-export default connect(mapStateToProps)(Search);
+export default connect(mapStateToProps)(PlayList);
